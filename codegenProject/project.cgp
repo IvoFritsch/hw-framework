@@ -1,0 +1,40 @@
+{
+  "nome": "hw-framework",
+  "models": [
+  ],
+  "templates": [
+    "SQLs/create_tables/create_table_[nomeModel].sql",
+    "SQLs/add_relacs/add_FKs_[nomeModel].sql",
+    "src/main/java/dao/order/[nomeModel]OrderBy.java",
+    "src/main/java/dao/seletores/Seletor[nomeModel].java",
+    "src/main/java/dao/updateCampos/UpdateCampos[nomeModel].java",
+    "src/main/java/dao/[nomeModel]Dao.java",
+    "src/main/java/model/[nomeModel].java",
+    "src/main/java/utils/[nomeModel]Utils.java",
+    "src/main/java/dao/seletores/queries/Query[nomeModel].java",
+    "src/main/webapp/WEB-INF/dbDescriptors/[nomeModel].json"
+  ],
+  "generatedFilesChecksum": {},
+  "snippets": [
+    "SQL/createCampo.snip",
+    "utils/funcaoValidacaoCampo.snip",
+    "utils/switchCamposGrupo.snip",
+    "SQL/descriptorTipoCampo.snip"
+  ],
+  "assocTipo": {
+    "String": "STRING",
+    "int": "INTEIRO",
+    "Integer": "INTEIRO",
+    "Long": "INTEIRO",
+    "long": "INTEIRO",
+    "float": "COM_VIRGULA",
+    "Float": "COM_VIRGULA",
+    "Double": "COM_VIRGULA",
+    "double": "COM_VIRGULA",
+    "boolean": "BOOLEANO",
+    "Boolean": "BOOLEANO",
+    "Calendar": "DATA",
+    "Date": "DATA"
+  },
+  "projectRootDir": "C:/Users/pedro/workspace/teste-maven/hw-framework/"
+}

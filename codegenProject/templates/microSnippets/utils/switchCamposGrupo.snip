@@ -1,0 +1,8 @@
+			switch(campo){
+<#list root.model.getListaCamposComAConfigIgualAIncluiSubconfigs("grupoCampos",obj) as campo>
+				case "${campo.nome}":
+</#list>
+					return true;
+				default:
+					return false;
+			}
