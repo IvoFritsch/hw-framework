@@ -86,6 +86,16 @@ public class HwResponse {
         mensagemAlerta = new MensagemAlerta().mensagem(mensagem);
         return mensagemAlerta;
     }
+
+    /**
+     * (Equivalente ao setMensagemAlerta) Define uma mensagem de alerta a ser enviada juntamente com a resposta.
+     *
+     * @param mensagem A mensagem de alerta
+     * @return A mensagem para setar mais configurações.
+     */
+    public MensagemAlerta setMensagem(String mensagem){
+        return setMensagemAlerta(mensagem);
+    }
     
     /**
      * Envia uma URL de redirect juntamente com a resposta.

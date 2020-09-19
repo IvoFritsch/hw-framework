@@ -83,6 +83,7 @@ public abstract class RestApi extends HttpServlet{
     private static boolean readyToAccept;
     
     public static String corsHeader = null;
+    public static String corsDomain = null;
     public static String frontendBaseUrl;
     public static String backendBaseUrl;
     public static String nomeProjeto;
@@ -113,24 +114,33 @@ public abstract class RestApi extends HttpServlet{
     
     @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp){
-        
-        // Adiciona permissão para localhost
-        String requestURL = req.getHeader("Referer");
         String corsOverride = corsHeader;
-        try {
-            if(requestURL != null && !requestURL.startsWith("https://www.")){
-                if(requestURL.startsWith("http://localhost")){
-                    corsOverride = "http://localhost:"+new URL(requestURL).getPort();
-                } else if(requestURL.replace("https://", "").split("/", 2)[0].endsWith(".haftware.now.sh")){
-                    corsOverride = "https://"+ requestURL.replace("https://", "").split("/", 2)[0];
+        if(corsDomain != null){
+            String origin = req.getHeader("Origin");
+            if(origin != null){
+                if(origin.endsWith(corsDomain) || origin.startsWith("http://localhost") || origin.startsWith("http://lvh.me")){
+                    corsOverride = origin;
                 }
             }
-        } catch (MalformedURLException ex){}
-        // Headers para o browser não bloquear os requests de dominios diferentes
-        if(corsHeader != null){
-            resp.addHeader("Access-Control-Allow-Origin", corsOverride);
-            resp.addHeader("Access-Control-Allow-Headers", "authId, Content-Type");
-            resp.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
+        } else {
+
+            // Adiciona permissão para localhost
+            String requestURL = req.getHeader("Referer");
+            try {
+                if(requestURL != null && !requestURL.startsWith("https://www.")){
+                    if(requestURL.startsWith("http://localhost")){
+                        corsOverride = "http://localhost:"+new URL(requestURL).getPort();
+                    } else if(requestURL.replace("https://", "").split("/", 2)[0].endsWith(".haftware.now.sh")){
+                        corsOverride = "https://"+ requestURL.replace("https://", "").split("/", 2)[0];
+                    }
+                }
+            } catch (MalformedURLException ex){}
+            // Headers para o browser não bloquear os requests de dominios diferentes
+            if(corsDomain != null || corsHeader != null){
+                resp.addHeader("Access-Control-Allow-Origin", corsOverride);
+                resp.addHeader("Access-Control-Allow-Headers", "authId, Content-Type");
+                resp.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
+            }
         }
     }
 
@@ -139,24 +149,7 @@ public abstract class RestApi extends HttpServlet{
         //System.out.println(req.getRequestURI().substring(req.getRequestURI().indexOf(req.getServletPath())+req.getServletPath().length()+1));
         long entry = System.currentTimeMillis();
         resp.setCharacterEncoding("UTF-8");
-        
-        // Adiciona permissão para localhost
-        String requestURL = req.getHeader("Referer");
-        String corsOverride = corsHeader;
-        try {
-            if(requestURL != null && !requestURL.startsWith("https://www.")){
-                if(requestURL.startsWith("http://localhost")){
-                    corsOverride = "http://localhost:"+new URL(requestURL).getPort();
-                } else if(requestURL.replace("https://", "").split("/", 2)[0].endsWith(".haftware.now.sh")){
-                    corsOverride = "https://"+ requestURL.replace("https://", "").split("/", 2)[0];
-                }
-            }
-        } catch (MalformedURLException ex){}
-        if(corsHeader != null){
-            resp.addHeader("Access-Control-Allow-Origin", corsOverride);
-            resp.addHeader("Access-Control-Allow-Headers", "authId, Content-Type");
-            resp.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
-        }
+        doOptions(req, resp);
         resp.setContentType("application/json");
         
         // --------------------------------------------
@@ -811,6 +804,16 @@ public abstract class RestApi extends HttpServlet{
     public static void setCorsHeader(String corsHeader) {
         RestApi.corsHeader = corsHeader;
     }
+
+    /**
+     * Indica que um dominio inteiro pode fazer requests ao back
+     * 
+     * @param corsHeader dominio
+     */
+    public static void setCorsDomain(String corsDomain) {
+        RestApi.corsDomain = corsDomain;
+    }
+    
     
     /**
      * Indica a URL base de acesso externo ao backend projeto.
