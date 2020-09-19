@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.StringJoiner;
 import restFramework.NamedPreparedStatement;
 import restFramework.response.ErroRequestException;
+import restFramework.response.HwResponse;
+import utils.${root.model.nome}Utils;
 
 /**
  * Classe de modelo do banco de dados para a tabela ${root.model.nomeMin}s
@@ -124,6 +126,7 @@ public class ${root.model.nome} extends ${root.model.nome}Impl{
         ${valor} - ${campo.getValorSubconfigDaConfig("valoresPossiveis", valor)}<br>
 </#list>    */</#if>
     public ${root.model.nome} set${campo.nomePriCharMai}(${campo.tipoAsString} ${campo.nome}) {
+        if (Objects.equals(this.${campo.nome}, ${campo.nome})) return this;
 <#if campo.temAConfigIgualA("isId", "true")>
         if(!isNew && this.${campo.nome} != null) changedId = true;
 </#if>
@@ -310,7 +313,16 @@ public class ${root.model.nome} extends ${root.model.nome}Impl{
             throw new RuntimeException(ex);
         }
     }
-    
+
+    /**
+     * Valida todos campos do modelo
+     * 
+     * @param gruposCampos Grupos a validar, caso não passado, valida todos
+     */
+    public boolean validate(HwResponse res, ${root.model.nome}.Grupos... gruposCampos) {
+        return ${root.model.nome}Utils.valida${root.model.nome}(this, res, gruposCampos);
+    }
+
     /**
      * Exclui esse ${root.model.nome} do banco
      *
@@ -376,6 +388,12 @@ public class ${root.model.nome} extends ${root.model.nome}Impl{
         '}';
     }
   
+    public enum Grupos {
+        <#list root.model.getValoresESubconfigsEncontradosDaConfig("grupoCampos") as grupo>
+        ${grupo}<#sep>,</#sep>
+        </#list>
+    }
+    
     public enum Fields {
 <#list root.model.listaTodosCampos as campo>
         ${campo.nome} ("${campo.nome}"),

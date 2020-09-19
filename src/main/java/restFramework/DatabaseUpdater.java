@@ -44,8 +44,8 @@ public final class DatabaseUpdater implements Closeable {
         conn.createStatement().executeUpdate("SET DATABASE TRANSACTION CONTROL MVCC;");
         conn.createStatement().executeUpdate("CREATE CACHED TABLE IF NOT EXISTS framework_dbVersionsControl ("
             + "version integer,"
-            + "tableName varchar(50),"
-            + "descriptor varchar(1000),"
+            + "tableName varchar(300),"
+            + "descriptor varchar(10000),"
         + ");");
         LAST_VERSION = getLastVersion();
         Map<String, TableDescriptor> oldDescriptors = getVersionDescriptors(LAST_VERSION);

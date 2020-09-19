@@ -129,7 +129,7 @@
           <artifactId>jetty-maven-plugin</artifactId>
           <version>9.4.30.v20200611</version>
           <configuration>
-            <scanIntervalSeconds>2</scanIntervalSeconds>
+            <scanIntervalSeconds>1</scanIntervalSeconds>
 
             <webApp>
               <contextPath>/</contextPath>

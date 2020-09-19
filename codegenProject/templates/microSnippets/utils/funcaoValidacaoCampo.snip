@@ -6,10 +6,11 @@
      * @param valor O valor do campo a validar
      * @param response HwResponse para colocar o erro
      * @param nomeBaseCampo Caminho de campos na input, da raiz até chegar à esse campo, caso o campo esteja na raiz da input, passar null ou ""
+     * @param validaObrigatorio Se deve validar a obrigatoriedade do campo
      * @return true - valido, false - invalido
      */
-	public static boolean valida${obj.nomePriCharMai}${root.model.nome}(${obj.tipoAsString} valor, HwResponse response, String nomeBaseCampo){
-		return valida${obj.nomePriCharMai}${root.model.nome}(valor, response, nomeBaseCampo, "${obj.nome}");
+	public static boolean valida${obj.nomePriCharMai}${root.model.nome}(${obj.tipoAsString} valor, HwResponse response, String nomeBaseCampo, boolean validaObrigatorio){
+		return valida${obj.nomePriCharMai}${root.model.nome}(valor, response, nomeBaseCampo, "${obj.nome}", validaObrigatorio);
 	}
 	
 	/**
@@ -21,9 +22,10 @@
      * @param response HwResponse para colocar o erro
      * @param nomeBaseCampo Caminho de campos na input, da raiz até chegar à esse campo
      * @param nomeCampo Nome do campo, se tiver um nome diferente de '${obj.nome}' na input
+     * @param validaObrigatorio Se deve validar a obrigatoriedade do campo
      * @return true - valido, false - invalido
      */
-    public static boolean valida${obj.nomePriCharMai}${root.model.nome}(${obj.tipoAsString} valor, HwResponse response, String nomeBaseCampo, String nomeCampo){
+    public static boolean valida${obj.nomePriCharMai}${root.model.nome}(${obj.tipoAsString} valor, HwResponse response, String nomeBaseCampo, String nomeCampo, boolean validaObrigatorio){
         if(nomeBaseCampo == null){
             nomeBaseCampo = "";
         }
@@ -32,9 +34,11 @@
         }
         boolean retorno = true;
 <#if obj.config.subconfigDaConfigTemValorIgualA("validacao", "obrigatorio", "true")>
-        if(!Validador.validaObrigatorio(valor<#if obj.config.subconfigDaConfigTemValorIgualA("validacao", "permiteNegativo", "true")>, true</#if>)){
-            response.addErroValidacaoCampo(nomeBaseCampo + nomeCampo, CodigoErroCampo.NAO_INFORMADO, "Esse campo é obrigatório mas não foi informado");
-            retorno = false;
+        if(validaObrigatorio){
+            if(!Validador.validaObrigatorio(valor<#if obj.config.subconfigDaConfigTemValorIgualA("validacao", "permiteNegativo", "true")>, true</#if>)){
+                response.addErroValidacaoCampo(nomeBaseCampo + nomeCampo, CodigoErroCampo.NAO_INFORMADO, "Esse campo é obrigatório mas não foi informado");
+                retorno = false;
+            }
         }
 </#if>
 <#if obj.config.subconfigDaConfigTemValorIgualA("validacao", "email", "true")>

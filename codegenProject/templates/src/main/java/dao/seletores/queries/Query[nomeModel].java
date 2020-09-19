@@ -139,7 +139,7 @@ public class Query${root.model.nome} extends Seletor implements QueryMethods<${r
     }
     
     public ${root.model.nome}OrderBy orderBy(){
-        this.order = new ${root.model.nome}OrderBy(this);
+        if (this.order == null) this.order = new ${root.model.nome}OrderBy(this);
         return this.order;
     }
 
@@ -227,7 +227,7 @@ public class Query${root.model.nome} extends Seletor implements QueryMethods<${r
             this.addParameters(stmt);
             try(ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()){
-                    ret.add(${root.model.nome}.fromResultSet(rs, ${root.model.nome}.Fields.ALL));
+                    ret.add(${root.model.nome}.fromResultSet(rs, campos));
                 }
                 return ret;
             }
@@ -254,7 +254,7 @@ public class Query${root.model.nome} extends Seletor implements QueryMethods<${r
             try(ResultSet rs = stmt.executeQuery()) {
                 int count = 0;
                 while(rs.next()){
-                    c.accept(${root.model.nome}.fromResultSet(rs, ${root.model.nome}.Fields.ALL), count);
+                    c.accept(${root.model.nome}.fromResultSet(rs, campos), count);
                     count++;
                 }
                 return count;

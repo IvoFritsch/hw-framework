@@ -29,7 +29,7 @@ public class ${root.model.nome}Utils {
      * @param gruposCampos Lista de grupos de campos a considerar(vazio - TODOS CAMPOS)
      * @return Nova instancia de ${root.model.nome}, null caso haja um erro no Json
      */
-    public static ${root.model.nome} constroi${root.model.nome}DoJson(String json, String... gruposCampos) {
+    public static ${root.model.nome} constroi${root.model.nome}DoJson(String json, ${root.model.nome}.Grupos... gruposCampos) {
         ${root.model.nome} novo;
         try{
             novo = JsonManager.getGson().fromJson(json, ${root.model.nome}.class);
@@ -47,9 +47,9 @@ public class ${root.model.nome}Utils {
      * @param gruposCampos Lista de grupos à verificar
      * @return true se o campo pertence à um dos grupos, false caso contrário
      */
-    public static boolean campoPertenceAUmDosGrupos(String campo, String... gruposCampos) {
+    public static boolean campoPertenceAUmDosGrupos(String campo, ${root.model.nome}.Grupos... gruposCampos) {
         if(gruposCampos == null || gruposCampos.length == 0) return true;
-        for (String grupo : gruposCampos) {
+        for (${root.model.nome}.Grupos grupo : gruposCampos) {
             if(campoPertenceAoGrupo(campo, grupo)) return true;
         }
         return false;
@@ -61,7 +61,7 @@ public class ${root.model.nome}Utils {
      * @param ${root.model.nomePriCharMin} Classe à carregar os valores iniciais
      * @param gruposCampos Lista de grupos à inicializar
      */
-    public static void poeValoresIniciaisNosGrupos(${root.model.nome} ${root.model.nomePriCharMin}, String... gruposCampos) {
+    public static void poeValoresIniciaisNosGrupos(${root.model.nome} ${root.model.nomePriCharMin}, ${root.model.nome}.Grupos... gruposCampos) {
         if(gruposCampos == null) return;
 <#list root.model.getListaCamposComAConfig("valorInicial") as campo>
         if(campoPertenceAUmDosGrupos("${campo.nome}", gruposCampos)) ${root.model.nomePriCharMin}.set${campo.nomePriCharMai}(${campo.getValorConfig("valorInicial")});
@@ -94,7 +94,7 @@ public class ${root.model.nome}Utils {
      * @param ${root.model.nomePriCharMin} Classe a limpar
      * @param gruposCampos Lista de grupos à manter
      */
-    public static void limpaCamposNaoPertencemAUmDosGrupos(${root.model.nome} ${root.model.nomePriCharMin}, String... gruposCampos) {
+    public static void limpaCamposNaoPertencemAUmDosGrupos(${root.model.nome} ${root.model.nomePriCharMin}, ${root.model.nome}.Grupos... gruposCampos) {
         if(gruposCampos == null || gruposCampos.length == 0 || ${root.model.nomePriCharMin} == null) return;
         <#list root.model.listaTodosCampos as campo>
         if(!campoPertenceAUmDosGrupos("${campo.nome}",gruposCampos)) ${root.model.nomePriCharMin}.set${campo.nomePriCharMai}(null);
@@ -109,7 +109,7 @@ public class ${root.model.nome}Utils {
      * @param gruposCampos Lista de grupos de campos a considerar(vazio - TODOS CAMPOS)
      * @return true - valido, false - invalido
      */
-    public static boolean valida${root.model.nome}(${root.model.nome} ${root.model.nomePriCharMin}, HwResponse response, String... gruposCampos) {
+    public static boolean valida${root.model.nome}(${root.model.nome} ${root.model.nomePriCharMin}, HwResponse response, ${root.model.nome}.Grupos... gruposCampos) {
         return valida${root.model.nome}(${root.model.nomePriCharMin}, null, response, gruposCampos);
     }
 
@@ -122,7 +122,7 @@ public class ${root.model.nome}Utils {
      * @param gruposCampos Lista de grupos de campos a considerar(vazio - TODOS CAMPOS)
      * @return true - valido, false - invalido
      */
-    public static boolean valida${root.model.nome}(${root.model.nome} ${root.model.nomePriCharMin}, String nomeBaseCampos, HwResponse response, String... gruposCampos) {
+    public static boolean valida${root.model.nome}(${root.model.nome} ${root.model.nomePriCharMin}, String nomeBaseCampos, HwResponse response, ${root.model.nome}.Grupos... gruposCampos) {
         if(nomeBaseCampos == null){
             nomeBaseCampos = "";
         }
@@ -134,8 +134,9 @@ public class ${root.model.nome}Utils {
 <#list root.model.listaTodosCampos as campo>
 <#if campo.temConfig("validacao") || campo.tipo == "STRING">
         if(campoPertenceAUmDosGrupos("${campo.nome}",gruposCampos)){
-            if(!valida${campo.nomePriCharMai}${root.model.nome}(${root.model.nomePriCharMin}.get${campo.nomePriCharMai}(),response, nomeBaseCampos))
-                erros++;
+            if(!valida${campo.nomePriCharMai}${root.model.nome}(${root.model.nomePriCharMin}.get${campo.nomePriCharMai}(),response, nomeBaseCampos, true)) erros++;
+        }else{
+            if(!valida${campo.nomePriCharMai}${root.model.nome}(${root.model.nomePriCharMin}.get${campo.nomePriCharMai}(),response, nomeBaseCampos, false)) erros++;
         }
 </#if>
 </#list>
@@ -156,10 +157,10 @@ ${root.getSnippet("utils/funcaoValidacaoCampo",campo)}
      * @param grupo Nome do grupo à verificar
      * @return true se o campo pertence ao grupo, false caso contrário
      */
-    public static boolean campoPertenceAoGrupo(String campo, String grupo){
+    public static boolean campoPertenceAoGrupo(String campo, ${root.model.nome}.Grupos grupo){
         switch(grupo){
 <#list root.model.getValoresESubconfigsEncontradosDaConfig("grupoCampos") as grupo>
-            case "${grupo}":
+            case ${grupo}:
 ${root.getSnippet("utils/switchCamposGrupo",grupo)}
 </#list>
         }
